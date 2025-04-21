@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skyline SMP - Minecraft Server</title>
+  <style>
+    /* Reset and base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
+    body {
+      background-color: #000;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Background gradients */
+    .bg-gradient {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom right, rgba(16, 185, 129, 0.1), transparent, rgba(168, 85, 247, 0.1));
+      z-index: 0;
+    }
+
+    /* Animated background */
+    .animated-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background-color: #10b981;
+      border-radius: 50%;
+      opacity: 0;
+      animation: float 6s infinite ease-in-out;
+    }
+
+    .particle:nth-child(even) {
+      background-color: #a855f7;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0;
+      }
+      20% {
+        opacity: 0.5;
+      }
+      80% {
+        opacity: 0.5;
+      }
+      100% {
+        transform: translateY(-100px) translateX(50px);
+        opacity: 0;
+      }
+    }
+
+    /* Content styles */
+    .content {
+      position: relative;
+      z-index: 10;
+      max-width: 400px;
+      width: 100%;
+      padding: 0 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+
+    .logo svg {
+      width: 32px;
+      height: 32px;
+      color: #10b981;
+    }
+
+    .logo-text {
+      font-size: 24px;
+      font-weight: 700;
+      background: linear-gradient(to right, #10b981, #a855f7);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .card {
+      backdrop-filter: blur(12px);
+      background-color: rgba(0, 0, 0, 0.3);
+      padding: 32px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      width: 100%;
+      margin-bottom: 32px;
+    }
+
+    h1 {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    h1 span {
+      color: #10b981;
+    }
+
+    p {
+      color: #d1d5db;
+      margin-bottom: 32px;
+      line-height: 1.5;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      background: linear-gradient(to right, #10b981, #059669);
+      color: white;
+      font-weight: 500;
+      padding: 16px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 16px;
+    }
+
+    .btn:hover {
+      background: linear-gradient(to right, #059669, #047857);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn svg {
+      margin-left: 8px;
+      transition: transform 0.3s;
+    }
+
+    .btn:hover svg {
+      transform: translateX(4px);
+    }
+
+    .stats {
+      display: flex;
+      gap: 16px;
+      font-size: 14px;
+      color: #9ca3af;
+    }
+
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .stat-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .stat-dot.green {
+      background-color: #10b981;
+    }
+
+    .stat-dot.purple {
+      background-color: #a855f7;
+    }
+
+    /* Floating islands animation */
+    .floating-island {
+      position: absolute;
+      width: 100px;
+      height: 60px;
+      background: linear-gradient(to bottom, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.05));
+      border-radius: 50%;
+      filter: blur(20px);
+      z-index: -1;
+      animation: float-island 15s infinite ease-in-out;
+    }
+
+    .floating-island:nth-child(2) {
+      width: 150px;
+      height: 90px;
+      background: linear-gradient(to bottom, rgba(168, 85, 247, 0.2), rgba(168, 85, 247, 0.05));
+      animation-delay: 2s;
+      animation-duration: 18s;
+    }
+
+    .floating-island:nth-child(3) {
+      width: 80px;
+      height: 50px;
+      background: linear-gradient(to bottom, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05));
+      animation-delay: 5s;
+      animation-duration: 20s;
+    }
+
+    @keyframes float-island {
+      0% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+      }
+      50% {
+        transform: translateY(-100px) translateX(50px) rotate(5deg);
+      }
+      100% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background elements -->
+  <div class="bg-gradient"></div>
+  
+  <div class="animated-bg" id="animated-bg">
+    <!-- Particles will be added by JavaScript -->
+  </div>
+  
+  <!-- Floating islands -->
+  <div class="floating-island" style="top: 20%; left: 10%;"></div>
+  <div class="floating-island" style="top: 60%; left: 70%;"></div>
+  <div class="floating-island" style="top: 30%; left: 80%;"></div>
+  
+  <!-- Main content -->
+  <div class="content">
+    <!-- Logo -->
+    <div class="logo">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="6" y1="11" x2="10" y2="11"></line>
+        <line x1="8" y1="9" x2="8" y2="13"></line>
+        <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+        <path d="M18 16V8h-5.2c-.8 0-1.6.2-2.2.5"></path>
+        <path d="m21.9 7.5-1.8.5"></path>
+        <path d="m21.9 16.5-1.8-.5"></path>
+      </svg>
+      <span class="logo-text">Skyline SMP</span>
+    </div>
+
+    <!-- Main card -->
+    <div class="card">
+      <h1>Join our <span>Minecraft</span> adventure</h1>
+      <p>Experience a unique survival multiplayer server with an amazing community.</p>
+      <button class="btn">
+        Join Now
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14"></path>
+          <path d="m12 5 7 7-7 7"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Server stats -->
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-dot green"></div>
+        <span>24 Online</span>
+      </div>
+      <div class="stat">
+        <div class="stat-dot purple"></div>
+        <span>500+ Members</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Create animated particles
+    const animatedBg = document.getElementById('animated-bg');
+    const particleCount = 50;
+    
+    for (let i = 0; i < particleCount; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      
+      // Random position
+      const posX = Math.random() * 100;
+      const posY = Math.random() * 100;
+      particle.style.left = `${posX}%`;
+      particle.style.top = `${posY}%`;
+      
+      // Random size
+      const size = Math.random() * 3 + 1;
+      particle.style.width = `${size}px`;
+      particle.style.height = `${size}px`;
+      
+      // Random animation delay
+      const delay = Math.random() * 5;
+      particle.style.animationDelay = `${delay}s`;
+      
+      // Random animation duration
+      const duration = Math.random() * 10 + 5;
+      particle.style.animationDuration = `${duration}s`;
+      
+      animatedBg.appendChild(particle);
+    }
+    
+    // Button click event
+    document.querySelector('.btn').addEventListener('click', function() {
+      alert('Redirecting to Discord server...');
+      // In a real implementation, you would redirect to your Discord invite link
+      // window.location.href = 'https://discord.gg/your-invite-link';
+    });
+  </script>
+</body>
+</html>
